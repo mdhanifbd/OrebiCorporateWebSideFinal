@@ -35,7 +35,7 @@ let {totalPrice, totalQuantity} = data.reduce((acc,item)=>{
   return (
     <section>
       <Container>
-       <div className='pb-10' >
+        <div className='pb-10' >
         <h2 className='font-dm text-[49px] text-[#262626] font-bold' >Cart</h2>
         <ul className='flex items-center mb-5'>
             <li>
@@ -53,7 +53,10 @@ let {totalPrice, totalQuantity} = data.reduce((acc,item)=>{
             </li>
         </ul>   
         </div>
-        {data.map((item,i)=>(
+         {data.length >0 ?  
+        
+         <>
+       {data.map((item,i)=>(
         <div className='' >
         <div className='bg-[#F5F7F7] py-7 rounded-t-2xl grid grid-cols-5 pl-7'  >
            <div className='col-span-2' >
@@ -128,7 +131,7 @@ let {totalPrice, totalQuantity} = data.reduce((acc,item)=>{
           <h2>Total Price</h2>
           </div>   
          <div>
-          <h3>$</h3>
+          <h3>${totalPrice.toFixed(2)}</h3>
           </div>   
        </div>
        </div>
@@ -137,8 +140,11 @@ let {totalPrice, totalQuantity} = data.reduce((acc,item)=>{
        <button className='' ><Link className='text-[14px] text-[#fff] font-dm font-bold border-2 bg-black py-2 px-2 inline-block '>Proceed to Checkout</Link></button>
        </div>
     </div>
+     </>
+   :
+  <h2  className='font-dm text-[140px]'>No Item Select </h2>
        
-
+      }
  </Container>
 </section>
   )

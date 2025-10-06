@@ -13,6 +13,8 @@ import { motion } from "framer-motion";
 
 
 
+
+
 function SampleNextArrow(props) {
   const {onClick } = props;
   return (
@@ -96,7 +98,7 @@ var settings = {
           <ul className='bg-[rgba(124,120,120,0.7)] pr-3 pt-4 pb-4 py-2 shadow-lg' >
             <li className='flex justify-end items-center gap-4 cursor-pointer ' ><span className='text-white hover:text-[#f77272] font-dm' >Add to Wish List</span><FaHeart className='text-[red]' /></li>
             <li className='flex justify-end items-center gap-4 cursor-pointer'  ><span className='text-white hover:text-[#f0f089] font-dm'>Compare</span><IoGitCompare className='text-[yellow]' /></li>
-            <li className='flex justify-end items-center gap-4 cursor-pointer '  ><span className='text-white hover:text-[#82f182] font-dm'>Add to Cart</span><FaShoppingCart className='text-[green]' /></li>
+            <li  className='flex justify-end items-center gap-4 cursor-pointer '  ><span className='text-white hover:text-[#82f182] font-dm'>Add to Cart</span><FaShoppingCart className='text-[green]' /></li>
           </ul>
         </div>
         </div>

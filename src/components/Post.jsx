@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import { IoGitCompare } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import {addTocart} from "./slice/productSlice"
 
 const Post = ({ allPage, filterShow, listItem}) => {
   //console.log(allPage);
@@ -28,6 +30,7 @@ const Post = ({ allPage, filterShow, listItem}) => {
   setShow(true)
  }
 
+ let dispatch = useDispatch()
 
   return (
     <>
@@ -53,7 +56,7 @@ const Post = ({ allPage, filterShow, listItem}) => {
                       <IoGitCompare className="text-[yellow]" />
                     </li>
                     <li className="flex justify-end items-center gap-4">
-                      <span className="text-white hover:text-[#82f182] font-dm ">Add to Cart</span>
+                      <span className="text-white hover:text-[#82f182] font-dm ">Add to Cart ppp</span>
                       <FaShoppingCart className="text-[green]" />
                     </li>
                   </ul>
@@ -98,7 +101,7 @@ const Post = ({ allPage, filterShow, listItem}) => {
                         <span className="text-white hover:text-[#f0f089] font-dm  ">Compare</span>
                         <IoGitCompare className="text-[yellow]" />
                       </li>
-                      <li className="flex justify-end items-center gap-4">
+                      <li onClick={()=>dispatch(addTocart({...item,qun: 1}))}  className="flex justify-end items-center gap-4">
                         <span className="text-white hover:text-[#82f182] font-dm ">Add to Cart</span>
                         <FaShoppingCart className="text-[green]" />
                       </li>

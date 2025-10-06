@@ -8,8 +8,9 @@ import { IoSearchSharp } from "react-icons/io5";
 import { RiCloseLine } from "react-icons/ri";
 import Cartimg from "../assets/Cart-img.png"
 import { ApiData } from './ContextApi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {Link, useNavigate} from "react-router-dom"
+import { productRemove } from './Slice/productSlice'
 
 
 
@@ -17,13 +18,14 @@ const Navbar = () => {
   let navigate = useNavigate()
   let deta = useSelector((state)=> state.product.cartItem) 
   console.log(deta.length);
-  
+  let dispatch = useDispatch()
   let [category, setCategory]= useState(false)
   let [chartshow, setChartshow]= useState(false)
   let [accshow, setAccshow]= useState(false)
   let cateRef = useRef();
   let accRef = useRef();
   let chartRef = useRef();
+  let showCartRef = useRef();
 
 
 
@@ -44,6 +46,9 @@ const Navbar = () => {
          setChartshow(!chartshow)
       }else{
          setChartshow(false)
+      }
+      if(showCartRef.current.contains(e.target)){
+        setChartshow(true)
       }
    })
   },[category,accshow,chartshow])
@@ -119,10 +124,10 @@ let handleCart = ()=>{
                 </div>
             </div>
             {deta.length > 0 && 
-            <>
+            <div ref={showCartRef} >
             {chartshow &&
                <div className='bg-[#979797] w-full absolute  top-[42px] left-0 z-[2]'>
-                  {deta.map((item)=>(
+                  {deta.map((item,i)=>(
                     <div className='flex items-center' >
                      <div>
                      <img className='p-5 max-h-[200px] max-w-[100px] ' src={item.thumbnail} alt='#'/>
@@ -131,10 +136,13 @@ let handleCart = ()=>{
                   <h3 className='text-[#262626] text-[14px] font-dm pl-3 mt-9' >{item.title}</h3>
                   <h4 className='text-[#262626] text-[14px] pl-3 mt-2' >${item.price}</h4>
                   </div> 
+                  <div onClick={()=>dispatch(productRemove(i))} className='justify-end pl-5' >
+                  {/* <a href='#'><RiCloseLine className='absolute top-[30px] right-[30px] translate-y-[-50%]' /></a> */}
+                  <RiCloseLine />
+                  </div>
                   </div>
                   ))}
                   
-                <a href='#'><RiCloseLine className='absolute top-[30px] right-[30px] translate-y-[-50%]' /></a>
                 <div className=' bg-white shadow-2xl p-5 ' >
                   <div>
                   <h3 className='font-dm text-[16px] mb-5' >Subtotal: <span>$44.00</span></h3>
@@ -158,7 +166,7 @@ let handleCart = ()=>{
                   </ul>
                 </div>
                 }
-                </>
+                </div>
 }
                </div>
             </div>
