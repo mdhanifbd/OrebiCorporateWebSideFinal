@@ -72,7 +72,7 @@ let {totalPrice, totalQuantity} = data.reduce((acc,item)=>{
             <h2 className='text-[16px] text-[#262626] font-dm font-bold' >Total</h2>
            </div>
           </div> 
-        <div className='border-1 border-[#F0F0F0] py-7 ' >
+        <div className='border-1 border-[#F0F0F0] py-7'>
            <div className='grid grid-cols-5' >
             <div className='flex items-center gap-5 col-span-2 pl-3' >
              <div onClick={()=>dispatch(productRemove(i))} className='flex items-center justify-center gap-3' >

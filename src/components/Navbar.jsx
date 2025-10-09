@@ -3,7 +3,7 @@ import Container from './Container'
 import { FaBarsStaggered, FaUser } from 'react-icons/fa6'
 import { IoMdArrowDropdown } from 'react-icons/io'
 import { IoCartSharp, IoSearch } from 'react-icons/io5'
-import Crtboximage from "../assets/Cart-img.png"
+// import Crtboximage from "../assets/Cart-img.png"
 import { RxCross2 } from 'react-icons/rx'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from "react-router-dom"
@@ -255,6 +255,7 @@ useEffect(()=>{
                             }
                         </div>
                        </div>
+                       
                     </div>
                      
              </Container>
