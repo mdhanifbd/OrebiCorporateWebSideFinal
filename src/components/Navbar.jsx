@@ -1,31 +1,34 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import Container from './Container'
-import { FaBarsStaggered } from "react-icons/fa6";
-import { FaUserAlt } from "react-icons/fa";
-import { MdArrowDropDown } from "react-icons/md";
-import { FaCartShopping } from "react-icons/fa6";
-import { IoSearchSharp } from "react-icons/io5"; 
-import { RiCloseLine } from "react-icons/ri";
-import Cartimg from "../assets/Cart-img.png"
-import { ApiData } from './ContextApi';
-import { useDispatch, useSelector } from 'react-redux';
-import {Link, useNavigate} from "react-router-dom"
+import { FaBarsStaggered, FaUser } from 'react-icons/fa6'
+import { IoMdArrowDropdown } from 'react-icons/io'
+import { IoCartSharp, IoSearch } from 'react-icons/io5'
+import Crtboximage from "../assets/Cart-img.png"
+import { RxCross2 } from 'react-icons/rx'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from "react-router-dom"
 import { productRemove } from './Slice/productSlice'
+import { ApiData } from './ContextApi'
 
 
 
 const Navbar = () => {
-  let navigate = useNavigate()
-  let deta = useSelector((state)=> state.product.cartItem) 
-  console.log(deta.length);
-  let dispatch = useDispatch()
-  let [category, setCategory]= useState(false)
-  let [chartshow, setChartshow]= useState(false)
-  let [accshow, setAccshow]= useState(false)
-  let cateRef = useRef();
-  let accRef = useRef();
-  let chartRef = useRef();
-  let showCartRef = useRef();
+ let info = useContext(ApiData)
+    let navigate = useNavigate()
+    let data = useSelector((state) => state.product.cartItem)
+    let dispatch = useDispatch()
+    let [category, setCategory] = useState(false)
+    let [accShow, setAccShow] = useState(false)
+    let [cartShow, setCartShow] = useState(false)
+    let [search, setSearch] = useState("")
+    let [activeIndex, setActiveIndex] = useState(-1)
+    let [searchFilter, setSearchFilter] = useState([])
+    let cartRef = useRef()
+    let cateRef = useRef();
+    let showCartRef = useRef();
+    let accRef = useRef();
+ 
+  
 
 
 
@@ -38,20 +41,20 @@ const Navbar = () => {
           setCategory(false)
        }
        if(accRef.current.contains(e.target)){
-          setAccshow(!accshow)
+          setAccShow(!accShow)
       }else{
-         setAccshow(false)
+         setAccShow(false)
       }
-      if(chartRef.current.contains(e.target)){
-         setChartshow(!chartshow)
+      if(cateRef.current.contains(e.target)){
+         setCartShow(!cartShow)
       }else{
-         setChartshow(false)
+         setCartShow(false)
       }
       if(showCartRef.current.contains(e.target)){
-        setChartshow(true)
+        setCartShow(true)
       }
    })
-  },[category,accshow,chartshow])
+  },[category,accShow,cartShow])
 let [shopCate,setShopCate]= useState([])
 
 let handleCatagory = (citem)=>{
@@ -61,25 +64,86 @@ let cateFilter = info.filter((item)=>item.category == citem)
 setShopCate(cateFilter)
 }
 
-let data = useContext(ApiData)
+let deta = useContext(ApiData)
 
 let [shopCata,setShopCata] = useState([])
 
 
 useEffect(()=>{
-let shopCatAll = ([...new Set(data.map((item)=>item.category))])
-setShopCate(shopCatAll)
-},[data])
+      document.addEventListener("click", (e) => {
+            if (cateRef.current.contains(e.target)) {
+                setCategory(!category)
 
-let handleCart = ()=>{
-  navigate("/cart")
-}
+            } else {
+                setCategory(false)
+            }
+            if (accRef.current.contains(e.target)) {
+                setAccShow(!accShow)
+            } else {
+                setAccShow(false)
+
+            }
+            if (cartRef.current.contains(e.target)) {
+                setCartShow(!cartShow)
+            } else {
+                setCartShow(false)
+            }
+            if (showCartRef.current.contains(e.target)) {
+                setCartShow(true)
+            }
+
+        })
+    }, [category, accShow, cartShow])
+
+
+    let handleCart = () => {
+        navigate("/cart")
+    }
+
+
+    let handleSearch = (e) => {
+        setSearch(e.target.value);
+        setActiveIndex(-1) // reset selection when typing
+        if (e.target.value === "") {
+            setSearchFilter([])
+        } else {
+            let searchOne = info.filter((item) =>
+                item.title.toLowerCase().includes(e.target.value.toLowerCase())
+            )
+           setSearchFilter(searchOne);
+        }
+    }
+    let handleKeyDown = (e) => {
+        if (searchFilter.length > 0) {
+            if (e.key === "ArrowDown") {
+                setActiveIndex((prev) => (prev + 1) % searchFilter.length)
+            } else if (e.key === "ArrowUp") {
+                setActiveIndex((prev) =>
+                    prev <= 0 ? sarchFilter.length - 1 : prev - 1
+                )
+            } else if (e.key === "Enter" && activeIndex >= 0) {
+                handleSearchItem(searchFilter[activeIndex])
+            }
+        }
+    }
+
+    let handleSearchItem = (item) => {
+        navigate(`/product/${item.id}`)
+        setSearchFilter([])
+        setSearch("")
+    }
+    let handleCheckout = () => {
+        navigate("/checkout")
+        (false)
+    }
+
    
    
   return (
      <section className='bg-[rgba(118,118,118,0.4)] py-2' >
         <Container>
-            <div className='flex items-center relative' >
+          
+          <div className='flex items-center relative' >
                <div className='w-1/4' >
                <div className='flex gap-2 items-center ' ref={cateRef} >
                   <FaBarsStaggered />
@@ -90,6 +154,7 @@ let handleCart = ()=>{
                      ))}
                   </ul>
                </div>
+              
                {category && 
                <div className='bg-[#262626] py-3 absolute top-[60px] left-0 w-[20%] z-[2]' >
                  <ul>
@@ -101,76 +166,98 @@ let handleCart = ()=>{
                   </ul> 
                </div>
                  }
-               </div>
-              
-               <div className='relative w-2/4 z-[-1]' >
-                <input className='w-full border-2 border-[#262626]  py-3 px-3 rounded-full bg-[#fff] placeholder:text-[10px] lg:placeholder:text-[16px] ' type='search' placeholder='Search Products'  />
-                <div className='absolute top-[40%] right-5 translate-Y-[-40%]'>
-                <IoSearchSharp />  
-                </div>
-               </div>
-              
-               <div className='w-1/4 relative' >
-               <div className='flex  justify-end gap-3' >
-                <div className='flex items-center gap-3' ref={accRef}>
-                 <FaUserAlt />
-                 <MdArrowDropDown />
-                </div>                
-                <div className='relative' ref={chartRef} >
-                   {deta.length> 0 && 
-                  <div className='absolute left-[15px] top-[-9px] h-[15px] w-[15px] bg-[gray] rounded-full text-white text-center leading-3'>{deta.length}</div>}
-                  <FaCartShopping />
-                   
-                </div>
             </div>
-            {deta.length > 0 && 
-            <div ref={showCartRef} >
-            {chartshow &&
-               <div className='bg-[#979797] w-full absolute  top-[42px] left-0 z-[2]'>
-                  {deta.map((item,i)=>(
-                    <div className='flex items-center' >
-                     <div>
-                     <img className='p-5 max-h-[200px] max-w-[100px] ' src={item.thumbnail} alt='#'/>
-                     </div>
-                  <div >
-                  <h3 className='text-[#262626] text-[14px] font-dm pl-3 mt-9' >{item.title}</h3>
-                  <h4 className='text-[#262626] text-[14px] pl-3 mt-2' >${item.price}</h4>
-                  </div> 
-                  <div onClick={()=>dispatch(productRemove(i))} className='justify-end pl-5' >
-                  {/* <a href='#'><RiCloseLine className='absolute top-[30px] right-[30px] translate-y-[-50%]' /></a> */}
-                  <RiCloseLine />
-                  </div>
-                  </div>
-                  ))}
-                  
-                <div className=' bg-white shadow-2xl p-5 ' >
-                  <div>
-                  <h3 className='font-dm text-[16px] mb-5' >Subtotal: <span>$44.00</span></h3>
-                  </div>
-                  <div className='flex gap-3 ' >
-                  <div onClick={handleCart} >
-                     <a className='border-1 border-[#282828] font-dm text-[14px] font-bold hover:bg-[#262626] hover:text-white p-3 ' href='#'>View Cart</a>
-                  </div>
-                  <div>
-                     <Link className='border-1 border-[#282828] font-dm text-[14px] font-bold hover:bg-[#262626] hover:text-white p-3' to="/Checkout">Checkout</Link>
-                  </div>   
-                  </div>
-                </div>
-                </div>
-                 }
-               {accshow &&
-                  <div className='bg-[#262626] w-[70%] justify-center absolute top-[87px] right-[30px] translate-y-[-50%] z-[2]' >
-                  <ul>
-                     <li className='text-[14px] text-white font-dm hover:bg-[#fff] hover:text-[#262626] text-center hover:shadow-2xl py-3' ><a href='#'>My Account</a></li>
-                     <li className='text-[14px] text-white font-dm  hover:bg-[#fff] hover:text-[#262626] text-center hover:shadow-2xl py-3' ><a href='#'>Log Out</a></li>
-                  </ul>
-                </div>
-                }
-                </div>
-}
-               </div>
-            </div>
-        </Container>
+               <div className='w-2/4 relative'>
+                        <div className='relative'>
+                            <input onChange={handleSearch} onKeyDown={handleKeyDown} className='w-full border-2 border-[#262626] py-3 px-3 rounded-full bg-[white]' type="search" value={search} placeholder='search...' />
+                            <div className='absolute top-[50%] right-4 translate-y-[-50%]'>
+                                <IoSearch />
+                            </div>
+                        </div>
+                        {searchFilter.length > 0 &&
+                            <div className="absolute left-0 top-[65px] bg-red-500 w-full z-[999] h-[400px] overflow-y-scroll">
+                                {searchFilter.map((item, id) => (
+                                    <div
+                                        key={id}
+                                        onClick={() => handleSearchItem(item)}
+                                        className={`flex justify-between items-center flex-wrap px-5 cursor-pointer 
+          ${activeIndex === id ? "bg-blue-600 text-white" : ""}`}
+                                    >
+                                        <div>
+                                            <h3>{item.title}</h3>
+                                        </div>
+                                        <div>
+                                            <img className='h-[80px] w-[80px]' src={item.thumbnail} alt="" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        }
+                    </div>
+                    <div className='w-1/4 relative'>
+                        <div className='flex justify-end gap-5'>
+                            <div className='flex' ref={accRef}>
+                                <FaUser />
+                                <IoMdArrowDropdown />
+                            </div>
+                            <div className='relative' ref={cartRef}>
+                                {data.length > 0 &&
+
+                                    <div className="absolute left-[10px] top-[-10px] h-[20px] w-[20px] bg-[gray] rounded-full text-white text-center leading-[20px]">{data.length}</div>
+                                }
+                                <IoCartSharp />
+                            </div>
+                        </div>
+                        {accShow &&
+                            <div className='w-[200px] absolute top-[48px] left-[100px] z-[2]'>
+                                <ul>
+                                    <li className='text-[rgba(240,233,233,0.5)] text-[14px] font-dm font-normal pl-3  py-2 b hover:bg-[#fff] hover:text-[#000] bg-[#262626] text-center'><a href="">My Account</a></li>
+                                    <li className='text-[rgba(240,233,233,0.5)] text-[14px] font-dm font-normal pl-3  py-2 b hover:bg-[#fff] hover:text-[#000] bg-[#262626] text-center'><a href="">Log Out</a></li>
+
+                                </ul>
+                            </div>
+                        }
+                        <div ref={showCartRef}>
+                            {cartShow &&
+                                <div className='w-[270px] absolute top-[48px] left-[62px] py-2 z-[2] bg-[#fff]'>
+                                    {data.map((item, i) => (
+                                        <div>
+                                            <div className='flex gap-3 items-center justify-between pl-2 bg-[#F5F5F3] py-2'>
+                                                <div className='w-[80px] h-[80px]'>
+                                                    <img src={item.thumbnail} alt="" />
+                                                </div>
+                                                <div className='font-dm font-bold text-[14px] text-[#262626]'>
+                                                    <p >{item.title}</p>
+                                                    <p>${item.price}</p>
+                                                </div>
+                                                <div onClick={() => dispatch(productRemove(i))} className='justify-end pl-2'>
+                                                    <RxCross2 />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    ))}
+                                    <div className=''>
+                                        <div className='flex items-center gap-1 py-[14px] pl-2'>
+                                            <p>Subtotal:</p>
+                                            <p className='font-dm font-bold text-[14px] text-[#262626]'> $44.00</p>
+                                        </div>
+                                        <div className='flex px-2 py-[20px] gap-5 justify-between'>
+                                            <div onClick={handleCart} className=''>
+                                                <button className=''><a className="py-2 px-5 border-2 border-[#000] bg-[#000] text-[#fff] hover:bg-[#fff] hover:text-[#000]" href="">View Cart</a></button>
+                                            </div>
+                                            <div className='' onClick={handleCheckout}>
+                                                <button className=''><Link className="py-2 px-5 border-2 border-[#000] bg-[#000] text-[#fff] hover:bg-[#fff] hover:text-[#000]">Checkout</Link></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                       </div>
+                    </div>
+                     
+             </Container>
      </section>
 )
 }
